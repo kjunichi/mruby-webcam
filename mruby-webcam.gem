@@ -1,0 +1,6 @@
+name: mruby-webcam
+description: Webcam class
+author: Junichi Kajiwara
+website: https://github.com/kjunichi/mruby-webcam
+protocol: git
+repository: https://github.com/kjunichi/mruby-webcam.git
