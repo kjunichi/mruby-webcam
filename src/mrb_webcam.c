@@ -10,6 +10,8 @@
 #include "mruby/data.h"
 #include "mrb_webcam.h"
 
+extern void webcam_start(void);
+
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
 typedef struct {
@@ -55,6 +57,12 @@ static mrb_value mrb_webcam_hi(mrb_state *mrb, mrb_value self)
   return mrb_str_new_cstr(mrb, "hi!!");
 }
 
+static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self)
+{
+  webcam_start();
+  return mrb_str_new_cstr(mrb, "webcam start!!");
+}
+
 void mrb_mruby_webcam_gem_init(mrb_state *mrb)
 {
     struct RClass *webcam;
@@ -62,10 +70,10 @@ void mrb_mruby_webcam_gem_init(mrb_state *mrb)
     mrb_define_method(mrb, webcam, "initialize", mrb_webcam_init, MRB_ARGS_REQ(1));
     mrb_define_method(mrb, webcam, "hello", mrb_webcam_hello, MRB_ARGS_NONE());
     mrb_define_class_method(mrb, webcam, "hi", mrb_webcam_hi, MRB_ARGS_NONE());
+    mrb_define_class_method(mrb, webcam, "start", mrb_webcam_start, MRB_ARGS_NONE());
     DONE;
 }
 
 void mrb_mruby_webcam_gem_final(mrb_state *mrb)
 {
 }
-
