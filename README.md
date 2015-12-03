@@ -13,13 +13,8 @@ end
 ```
 ## example
 ```ruby
-p Webcam.hi
-#=> "hi!!"
-t = Webcam.new "hello"
-p t.hello
-#=> "hello"
-p t.bye
-#=> "hello bye"
+cam = Webcam.new
+cam.start
 ```
 
 ## License

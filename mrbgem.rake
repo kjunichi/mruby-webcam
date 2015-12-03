@@ -13,7 +13,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
   end
   spec.linker.flags_before_libraries << "-lopencv_highgui"
   #spec.linker.flags_before_libraries << "-lopencv_videoio"
-  #spec.linker.flags_before_libraries << "-lopencv_imgcodecs"
+  spec.linker.flags_before_libraries << "-lopencv_imgcodecs"
   #spec.linker.flags_before_libraries << "-lpencv_imgproc"
   spec.linker.flags_before_libraries << "-lopencv_core"
 end

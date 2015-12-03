@@ -10,7 +10,7 @@
 #include "mruby/data.h"
 #include "mrb_webcam.h"
 
-extern void webcam_start(void);
+extern unsigned char *webcam_start(void);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
@@ -62,7 +62,10 @@ static mrb_value mrb_webcam_hi(mrb_state *mrb, mrb_value self) {
 }
 
 static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self) {
-  webcam_start();
+  unsigned char *buf = webcam_start();
+  if (buf != NULL) {
+    return mrb_str_new_cstr(mrb, "webcam saved");
+  }
   return mrb_str_new_cstr(mrb, "webcam start!!");
 }
 
