@@ -35,10 +35,17 @@ static mrb_value mrb_webcam_init(mrb_state *mrb, mrb_value self) {
   DATA_TYPE(self) = &mrb_webcam_data_type;
   DATA_PTR(self) = NULL;
 
-  mrb_get_args(mrb, "s", &str, &len);
+  mrb_get_args(mrb, "|s", &str, &len);
+  // mrb_get_args(mrb, "s", &str, &len);
   data = (mrb_webcam_data *)mrb_malloc(mrb, sizeof(mrb_webcam_data));
-  data->str = str;
-  data->len = len;
+  if (len > 0) {
+    data->str = str;
+    data->len = len;
+  } else {
+    data->str = NULL;
+    data->len = 0;
+  }
+
   DATA_PTR(self) = data;
 
   return self;
@@ -63,7 +70,7 @@ void mrb_mruby_webcam_gem_init(mrb_state *mrb) {
   struct RClass *webcam;
   webcam = mrb_define_class(mrb, "Webcam", mrb->object_class);
   mrb_define_method(mrb, webcam, "initialize", mrb_webcam_init,
-                    MRB_ARGS_REQ(1));
+                    MRB_ARGS_OPT(1));
   mrb_define_method(mrb, webcam, "hello", mrb_webcam_hello, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, webcam, "hi", mrb_webcam_hi, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "start", mrb_webcam_start, MRB_ARGS_NONE());
