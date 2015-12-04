@@ -2,12 +2,12 @@
 
 using namespace std;
 
-extern "C" unsigned char *webcam_start(void);
+extern "C" int webcam_start(unsigned char **, size_t*);
 
-unsigned char *webcam_start(void) {
+int webcam_start(unsigned char **imageBuf, size_t *size) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
-    return NULL;
+    return -1;
   for (;;) {
     cv::Mat frame;
     cap >> frame; // get a new frame from camera
@@ -26,11 +26,13 @@ unsigned char *webcam_start(void) {
       param[1] = 95; // default(95) 0-100
 
       imencode(".jpg", frame, buff, param);
-      unsigned char *imageBuf = (unsigned char *)malloc(buff.size());
-      memcpy(imageBuf, &buff[0], buff.size());
-      return imageBuf;
+      *imageBuf = (unsigned char *)malloc(sizeof(char)*buff.size());
+      memcpy(*imageBuf, &buff[0], buff.size());
+      *size = buff.size();
+      //cout << "size = " << *size << endl;
+      return 0;
     }
   }
-  return NULL;
+  return -1;
   // the camera will be deinitialized automatically in VideoCapture destructor
 }
