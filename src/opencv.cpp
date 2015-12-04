@@ -1,10 +1,11 @@
 #include <opencv2/opencv.hpp>
+#include "mruby.h"
 
 using namespace std;
 
-extern "C" int webcam_start(unsigned char **, size_t*);
+extern "C" int webcam_start(mrb_state *, mrb_value);
 
-int webcam_start(unsigned char **imageBuf, size_t *size) {
+int webcam_start(mrb_state *mrb, mrb_value block) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
     return -1;
@@ -26,13 +27,13 @@ int webcam_start(unsigned char **imageBuf, size_t *size) {
       param[1] = 95; // default(95) 0-100
 
       imencode(".jpg", frame, buff, param);
-      *imageBuf = (unsigned char *)malloc(sizeof(char)*buff.size());
-      memcpy(*imageBuf, &buff[0], buff.size());
-      *size = buff.size();
-      //cout << "size = " << *size << endl;
-      return 0;
+      mrb_value imgdata = mrb_str_new(mrb, (const char *)&buff[0], buff.size());
+
+      // ブロックを呼び出す。
+      mrb_yield(mrb, block, imgdata);
+      // return 0;
     }
   }
-  return -1;
+  return 0;
   // the camera will be deinitialized automatically in VideoCapture destructor
 }

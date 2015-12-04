@@ -8,9 +8,10 @@
 
 #include "mruby.h"
 #include "mruby/data.h"
+#include "mruby/variable.h"
 #include "mrb_webcam.h"
 
-extern int webcam_start(unsigned char **,size_t *);
+extern int webcam_start(mrb_state *, mrb_value);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
@@ -64,11 +65,12 @@ static mrb_value mrb_webcam_hi(mrb_state *mrb, mrb_value self) {
 static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self) {
   unsigned char *buf;
   size_t size;
-
-  int rtn = webcam_start(&buf, &size);
-  if (rtn == 0) {
-    //return mrb_str_new_cstr(mrb, "");
-    return mrb_str_new(mrb, (const char*)buf, size);;
+  mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
+  int rtn = webcam_start(mrb, block);
+  if (rtn != 0) {
+    return
+    // return mrb_str_new_cstr(mrb, "");
+    // captureブロックを呼び出す
   }
   return mrb_str_new_cstr(mrb, "");
 }
