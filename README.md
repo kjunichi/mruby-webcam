@@ -14,6 +14,14 @@ end
 ## example
 ```ruby
 cam = Webcam.new
+
+cam.capture {|img|
+  # img : JPEG format
+  puts img.length
+}
+
+# SPC : capture
+# ESC : exit
 cam.start
 ```
 
