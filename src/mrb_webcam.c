@@ -68,11 +68,11 @@ static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self) {
   mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
   int rtn = webcam_start(mrb, block);
   if (rtn != 0) {
-    return
+    return mrb_false_value();
     // return mrb_str_new_cstr(mrb, "");
     // captureブロックを呼び出す
   }
-  return mrb_str_new_cstr(mrb, "");
+  return mrb_true_value();
 }
 
 void mrb_mruby_webcam_gem_init(mrb_state *mrb) {
