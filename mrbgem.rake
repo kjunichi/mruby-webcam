@@ -18,6 +18,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/liblibwebp.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/liblibpng.a"
       spec.linker.flags_before_libraries << "-lvfw32 -lole32 -loleaut32 -lgdi32 -lcomdlg32 -luuid"
+      spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libwinpthread.a"
       spec.linker.flags_before_libraries << "-static-libgcc -static-libstdc++"
     end
     if %w(i686-pc-linux-gnu x86_64-pc-linux-gnu).include?(build.host_target)
@@ -36,7 +37,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/liblibwebp.a"
 
       spec.linker.flags_before_libraries << "-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfontconfig -lgobject-2.0 -lglib-2.0 -lfreetype -lpng"
-      spec.linker.flags_before_libraries << "-ldl -lpthread -lz"
+      spec.linker.flags_before_libraries << "-ldl -lpthread -lz -static-libgcc -static-libstdc++"
     end
     if %w(x86_64-apple-darwin14 i386-apple-darwin14).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
