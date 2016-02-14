@@ -5,6 +5,8 @@ using namespace std;
 
 extern "C" int webcam_start(mrb_state *, mrb_value);
 
+#define CAM_WINDOW_NAME "Webcam window"
+
 int webcam_start(mrb_state *mrb, mrb_value block) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
@@ -15,10 +17,13 @@ int webcam_start(mrb_state *mrb, mrb_value block) {
     // cvtColor(frame, edges, COLOR_BGR2GRAY);
     // GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
     // Canny(edges, edges, 0, 30, 3);
-    cv::imshow("Webcam feed", frame);
+    cv::imshow(CAM_WINDOW_NAME, frame);
     int keyCode = cv::waitKey(30);
-    if (keyCode == 0x1b)
+    if (keyCode == 0x1b) {
+      cv::destroyWindow(CAM_WINDOW_NAME);
+      cv::waitKey(1);
       break;
+    }
     if (keyCode == 0x20) {
       // save image to buffer in JPEG format.
       vector<uchar> buff; // buffer for coding
