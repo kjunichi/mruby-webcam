@@ -12,6 +12,7 @@
 #include "mrb_webcam.h"
 
 extern int webcam_start(mrb_state *, mrb_value);
+extern int webcam_snap(mrb_state *, mrb_value);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
@@ -62,6 +63,17 @@ static mrb_value mrb_webcam_hi(mrb_state *mrb, mrb_value self) {
   return mrb_str_new_cstr(mrb, "hi!!");
 }
 
+static mrb_value mrb_webcam_snap(mrb_state *mrb, mrb_value self) {
+  unsigned char *buf;
+  size_t size;
+  mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
+  int rtn = webcam_snap(mrb, block);
+  if (rtn != 0) {
+    return mrb_false_value();
+  }
+  return mrb_true_value();
+}
+
 static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self) {
   unsigned char *buf;
   size_t size;
@@ -82,6 +94,7 @@ void mrb_mruby_webcam_gem_init(mrb_state *mrb) {
                     MRB_ARGS_OPT(1));
   mrb_define_method(mrb, webcam, "hello", mrb_webcam_hello, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, webcam, "hi", mrb_webcam_hi, MRB_ARGS_NONE());
+  mrb_define_method(mrb, webcam, "snap", mrb_webcam_snap, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "start", mrb_webcam_start, MRB_ARGS_NONE());
   DONE;
 }

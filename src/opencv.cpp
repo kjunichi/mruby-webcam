@@ -1,11 +1,35 @@
-#include <opencv2/opencv.hpp>
 #include "mruby.h"
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 
+extern "C" int webcam_snap(mrb_state *, mrb_value);
 extern "C" int webcam_start(mrb_state *, mrb_value);
 
 #define CAM_WINDOW_NAME "Webcam window"
+
+int webcam_snap(mrb_state *mrb, mrb_value block) {
+  cv::VideoCapture cap(0); // open the default camera
+  if (!cap.isOpened())     // check if we succeeded
+    return -1;
+
+  cv::Mat frame;
+  cap >> frame; // get a new frame from camera
+
+  vector<uchar> buff; // buffer for coding
+  vector<int> param = vector<int>(2);
+  param[0] = CV_IMWRITE_JPEG_QUALITY;
+  param[1] = 95; // default(95) 0-100
+
+  imencode(".jpg", frame, buff, param);
+  mrb_value imgdata = mrb_str_new(mrb, (const char *)&buff[0], buff.size());
+
+  // ブロックを呼び出す。
+  mrb_yield(mrb, block, imgdata);
+
+  return 0;
+  // the camera will be deinitialized automatically in VideoCapture destructor
+}
 
 int webcam_start(mrb_state *mrb, mrb_value block) {
   cv::VideoCapture cap(0); // open the default camera
