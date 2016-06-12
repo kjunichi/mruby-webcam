@@ -75,10 +75,8 @@ static mrb_value mrb_webcam_snap(mrb_state *mrb, mrb_value self) {
 }
 
 static mrb_value mrb_webcam_start(mrb_state *mrb, mrb_value self) {
-  unsigned char *buf;
-  size_t size;
-  mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
-  int rtn = webcam_start(mrb, block);
+
+  int rtn = webcam_start(mrb, self);
   if (rtn != 0) {
     return mrb_false_value();
     // return mrb_str_new_cstr(mrb, "");

@@ -24,6 +24,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
     if %w(i686-pc-linux-gnu x86_64-pc-linux-gnu).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
 
+      spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_objdetect.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_highgui.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_videoio.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_imgcodecs.a"
@@ -41,6 +42,8 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
     end
     if %w(x86_64-apple-darwin14 i386-apple-darwin14).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
+
+      spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_objdetect.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_highgui.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_videoio.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_imgcodecs.a"
@@ -70,6 +73,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
         spec.linker.flags_before_libraries << "-L/usr/local/opt/opencv/lib"
       end
     end
+    spec.linker.flags_before_libraries << "-lopencv_objdetect"
     spec.linker.flags_before_libraries << "-lopencv_imgproc"
     spec.linker.flags_before_libraries << "-lopencv_highgui"
     #spec.linker.flags_before_libraries << "-lopencv_videoio"
