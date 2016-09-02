@@ -2,6 +2,8 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
   spec.license = 'MIT'
   spec.authors = 'Junichi Kajiwara'
   if build.kind_of?(MRuby::CrossBuild)
+    puts build.host_target
+    
     if %w(x86_64-w64-mingw32 i686-w64-mingw32).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_highgui310.a"
