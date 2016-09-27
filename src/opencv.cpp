@@ -3,7 +3,14 @@
 #include "mruby/string.h"
 #include "mruby/variable.h"
 
+#ifdef __APPLE__
+#include "TargetConditionals.h"
+#ifdef TARGET_OS_IPHONE
+#include <opencv.hpp>
+#endif
+#else
 #include <opencv2/opencv.hpp>
+#endif
 
 using namespace std;
 

@@ -3,6 +3,13 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
   spec.authors = 'Junichi Kajiwara'
 
   if build.kind_of?(MRuby::CrossBuild)
+    if spec.build.cc.command.start_with?("xcrun")
+      OPENCV_DIR="#{ENV["HOME"]}/Downloads/opencv2.framework"
+      puts "iOS! #{spec.build.cxx.command}"
+      puts "flags = #{spec.build.cxx.flags}"
+      spec.cxx.flags << "-I#{OPENCV_DIR}/Headers"
+      next
+    end
     if !build.host_target
       arch = spec.build.cc.command.split('/')[-1].split('-')[0]
       arch.gsub!("arm","armeabi")
