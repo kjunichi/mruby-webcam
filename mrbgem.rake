@@ -74,10 +74,14 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       end
     end
     spec.linker.flags_before_libraries << "-lopencv_objdetect"
-    spec.linker.flags_before_libraries << "-lopencv_imgproc"
+    
     spec.linker.flags_before_libraries << "-lopencv_highgui"
-    #spec.linker.flags_before_libraries << "-lopencv_videoio"
-    #spec.linker.flags_before_libraries << "-lpencv_imgproc"
+    if File.exists?("/usr/local/lib/libopencv_videoio.so") then
+      spec.linker.flags_before_libraries << "-lopencv_videoio"
+      spec.linker.flags_before_libraries << "-lopencv_imgcodecs"      
+    end
+    spec.linker.flags_before_libraries << "-lopencv_imgproc"
     spec.linker.flags_before_libraries << "-lopencv_core"
+    spec.linker.flags_before_libraries << "-lstdc++"
   end
 end

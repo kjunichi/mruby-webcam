@@ -7,8 +7,10 @@
 
 using namespace std;
 
-extern "C" int webcam_snap(mrb_state *, mrb_value);
-extern "C" int webcam_start(mrb_state *, mrb_value);
+MRB_BEGIN_DECL
+  int webcam_snap(mrb_state *, mrb_value);
+  int webcam_start(mrb_state *, mrb_value);
+MRB_END_DECL
 
 #define CAM_WINDOW_NAME "Webcam window"
 

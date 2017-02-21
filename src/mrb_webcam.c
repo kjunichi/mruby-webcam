@@ -54,7 +54,7 @@ static mrb_value mrb_webcam_init(mrb_state *mrb, mrb_value self) {
 }
 
 static mrb_value mrb_webcam_hello(mrb_state *mrb, mrb_value self) {
-  mrb_webcam_data *data = DATA_PTR(self);
+  mrb_webcam_data *data = (mrb_webcam_data *)DATA_PTR(self);
 
   return mrb_str_new(mrb, data->str, data->len);
 }
