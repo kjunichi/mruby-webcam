@@ -4,6 +4,7 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
   if build.kind_of?(MRuby::CrossBuild)
     if %w(x86_64-w64-mingw32 i686-w64-mingw32).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
+      spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_objdetect310.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_highgui310.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_videoio310.a"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_imgcodecs310.a"
