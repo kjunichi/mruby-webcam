@@ -4,7 +4,8 @@ COPY opencv_i686-w64-mingw32.cmake /root/src/
 COPY opencv_x86_64-w64-mingw32.cmake /root/src/
 COPY OpenCVCompilerOptions.cmake.patch /root/src/
 
-RUN cd /root/src && git clone --depth 1 https://github.com/Itseez/opencv.git && cd opencv && mkdir build \
+RUN cd /root/src && git clone https://github.com/Itseez/opencv.git && cd opencv && mkdir build \
+  && git checkout 3.1.0 \
   && patch -p1 < /root/src/OpenCVCompilerOptions.cmake.patch && cd build \
   && cmake -DCMAKE_TOOLCHAIN_FILE=/root/src/opencv_i686-w64-mingw32.cmake -DWITH_IPP=OFF -DBUILD_SHARED_LIBS=OFF  .. \
   && make -j4 && make install && cp -r install/include/* /usr/i686-w64-mingw32/include/ \
