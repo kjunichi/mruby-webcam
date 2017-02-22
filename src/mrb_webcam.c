@@ -29,7 +29,8 @@ static mrb_value mrb_webcam_init(mrb_state *mrb, mrb_value self) {
   mrb_webcam_data *data;
   char *str;
   int len;
-
+  mrb_value haarcascadePath;
+  
   data = (mrb_webcam_data *)DATA_PTR(self);
   if (data) {
     mrb_free(mrb, data);
@@ -49,7 +50,9 @@ static mrb_value mrb_webcam_init(mrb_state *mrb, mrb_value self) {
   }
 
   DATA_PTR(self) = data;
-
+  haarcascadePath = mrb_str_new_cstr( mrb, "" );
+  mrb_iv_set(mrb, self, mrb_intern(mrb, "@haarcascade_path"), haarcascadePath);
+  
   return self;
 }
 
