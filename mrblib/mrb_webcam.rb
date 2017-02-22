@@ -1,10 +1,6 @@
 class Webcam
   attr_accessor :haarcascade_path, :smile_cascade_path
   attr_accessor :fmt, :capture_cb, :face_cb, :smile_cb
-
-  def initialize(*args)
-    @haarcascade_path=""
-  end
   
   def bye
     self.hello + " bye"
