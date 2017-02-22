@@ -10,6 +10,7 @@
 #include "mruby/data.h"
 #include "mruby/variable.h"
 #include "mrb_webcam.h"
+#include <string.h>
 
 extern int webcam_start(mrb_state *, mrb_value);
 extern int webcam_snap(mrb_state *, mrb_value);
