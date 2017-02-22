@@ -51,7 +51,7 @@ static mrb_value mrb_webcam_init(mrb_state *mrb, mrb_value self) {
 
   DATA_PTR(self) = data;
   haarcascadePath = mrb_str_new_cstr( mrb, "" );
-  mrb_iv_set(mrb, self, mrb_intern(mrb, "@haarcascade_path"), haarcascadePath);
+  mrb_iv_set(mrb, self, mrb_intern(mrb, "@haarcascade_path", strlen("@haarcascade_path")+1), haarcascadePath);
   
   return self;
 }
