@@ -4,6 +4,7 @@ compiler:
   - clang
 before_install:
     - sudo apt-get -qq update
+    - sudo ln /dev/null /dev/raw1394
 install:
     - sudo apt-get -qq install rake bison git gperf libopencv-dev
 before_script:
