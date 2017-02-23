@@ -5,9 +5,14 @@ class Webcam
   def init2
     @haarcascade_path = ""
     @smile_cascade_path = ""
-    @fmt = "jpg"
+    @fmt = ".jpg"
   end
   
+  def setFmt(ext)
+    @fmt = "." + ext
+    p @fmt
+  end
+
   def bye
     self.hello + " bye"
   end

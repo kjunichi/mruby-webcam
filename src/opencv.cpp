@@ -24,6 +24,16 @@ static mrb_value getimage(mrb_state *mrb, cv::Mat mat) {
   return mrb_str_new(mrb, (const char *)&buff[0], buff.size());
 }
 
+static mrb_value getimageByType(mrb_state *mrb, cv::Mat mat, string type) {
+  vector<uchar> buff; // buffer for coding
+  vector<int> param = vector<int>(2);
+  param[0] = CV_IMWRITE_JPEG_QUALITY;
+  param[1] = 95; // default(95) 0-100
+
+  imencode(type.c_str(), mat, buff, param);
+  return mrb_str_new(mrb, (const char *)&buff[0], buff.size());
+}
+
 int webcam_snap(mrb_state *mrb, mrb_value block) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
@@ -138,7 +148,7 @@ int faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBloc
   return 0;
 }
 
-int simpleLoop(mrb_state *mrb, mrb_value block) {
+int simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
     return -1;
@@ -156,10 +166,14 @@ int simpleLoop(mrb_state *mrb, mrb_value block) {
       break;
     }
     if (keyCode == 0x20) {
+      // decide image type
+      mrb_value fmtVal = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@fmt"));
+      string fmt(RSTRING_PTR( fmtVal ), RSTRING_LEN( fmtVal ));
+      
       // save image to buffer in JPEG format.
 
       // ブロックを呼び出す。
-      mrb_yield(mrb, block, getimage(mrb,frame));
+      mrb_yield(mrb, block, getimageByType(mrb,frame, fmt));
       // return 0;
     }
   }
@@ -181,5 +195,5 @@ int webcam_start(mrb_state *mrb, mrb_value self) {
   if(!mrb_nil_p(smileBlock)) {
     return faceLoop(mrb, self, block, faceBlock, smileBlock, haarcascade_path);
   }
-  return simpleLoop(mrb, block);
+  return simpleLoop(mrb, block, self);
 }
