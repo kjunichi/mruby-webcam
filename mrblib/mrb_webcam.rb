@@ -3,6 +3,8 @@ class Webcam
   attr_accessor :fmt, :capture_cb, :face_cb, :smile_cb
   
   def init2
+    @haarcascade_path = ""
+    @smile_cascade_path = ""
     @fmt = "jpg"
   end
   
