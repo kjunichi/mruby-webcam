@@ -33,7 +33,7 @@ cam.start
 cam = Webcam.new
 cam.setFmt "ppm"
 cam.capture {|img|
-  # img : PPM format
+  # img : PPM format(P6)
   puts img
 }
 
