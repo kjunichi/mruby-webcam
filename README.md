@@ -18,8 +18,23 @@ end
 cam = Webcam.new
 
 cam.capture {|img|
-  # img : JPEG format
+  # img : JPEG format(default)
   puts img.length
+}
+
+# SPC : capture
+# ESC : exit
+cam.start
+```
+
+### how to put ppm image
+
+```ruby
+cam = Webcam.new
+cam.setFmt "ppm"
+cam.capture {|img|
+  # img : PPM format
+  puts img
 }
 
 # SPC : capture
