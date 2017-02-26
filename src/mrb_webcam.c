@@ -13,7 +13,7 @@
 #include <string.h>
 
 extern int webcam_start(mrb_state *, mrb_value);
-extern int webcam_snap(mrb_state *, mrb_value);
+extern int webcam_snap(mrb_state *, mrb_value, mrb_value);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
@@ -71,7 +71,7 @@ static mrb_value mrb_webcam_snap(mrb_state *mrb, mrb_value self) {
   unsigned char *buf;
   size_t size;
   mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
-  int rtn = webcam_snap(mrb, block);
+  int rtn = webcam_snap(mrb, self, block);
   if (rtn != 0) {
     return mrb_false_value();
   }

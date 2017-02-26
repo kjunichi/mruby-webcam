@@ -8,7 +8,7 @@
 using namespace std;
 
 MRB_BEGIN_DECL
-  int webcam_snap(mrb_state *, mrb_value);
+  int webcam_snap(mrb_state *, mrb_value, mrb_value);
   int webcam_start(mrb_state *, mrb_value);
 MRB_END_DECL
 
@@ -34,7 +34,7 @@ static mrb_value getimageByType(mrb_state *mrb, cv::Mat mat, string type) {
   return mrb_str_new(mrb, (const char *)&buff[0], buff.size());
 }
 
-int webcam_snap(mrb_state *mrb, mrb_value block) {
+int webcam_snap(mrb_state *mrb, mrb_value self, mrb_value block) {
   cv::VideoCapture cap(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
     return -1;
@@ -42,8 +42,12 @@ int webcam_snap(mrb_state *mrb, mrb_value block) {
   cv::Mat frame;
   cap >> frame; // get a new frame from camera
 
+  // decide image type
+  mrb_value fmtVal = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@fmt"));
+  string fmt(RSTRING_PTR( fmtVal ), RSTRING_LEN( fmtVal ));
+      
   // ブロックを呼び出す。
-  mrb_yield(mrb, block, getimage(mrb, frame));
+  mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
 
   return 0;
   // the camera will be deinitialized automatically in VideoCapture destructor
