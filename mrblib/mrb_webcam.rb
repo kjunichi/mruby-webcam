@@ -10,7 +10,7 @@ class Webcam
   
   def setFmt(ext)
     @fmt = "." + ext
-    p @fmt
+    #p @fmt
   end
 
   def bye
