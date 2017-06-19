@@ -4,7 +4,6 @@ os: Visual Studio 2015
 
 clone_depth: 50
 
-
 environment:
   matrix:
     # Visual Studio 2015 64bit
