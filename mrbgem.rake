@@ -64,13 +64,13 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
     end
   else
     if ENV['VisualStudioVersion'] || ENV['VSINSTALLDIR'] then
-      spec.linker.flags_before_libraries << "opencv_videoio.lib"
-      spec.linker.flags_before_libraries << "opencv_imgcodecs.lib"
-      spec.linker.flags_before_libraries << "opencv_objdetect.lib"
-      spec.linker.flags_before_libraries << "opencv_videoio.lib"
-      spec.linker.flags_before_libraries << "opencv_imgcodecs.lib"
-      spec.linker.flags_before_libraries << "opencv_imgproc.lib"
-      spec.linker.flags_before_libraries << "opencv_core.lib"
+      spec.linker.flags_before_libraries << "libopencv_videoio"
+      spec.linker.flags_before_libraries << "libopencv_imgcodecs"
+      spec.linker.flags_before_libraries << "libopencv_objdetect"
+      spec.linker.flags_before_libraries << "libopencv_videoio"
+      spec.linker.flags_before_libraries << "libopencv_imgcodecs"
+      spec.linker.flags_before_libraries << "libopencv_imgproc"
+      spec.linker.flags_before_libraries << "libopencv_core"
       #spec.linker.flags_before_libraries << "stdc++"
     else
       if RUBY_PLATFORM =~ /darwin/i
