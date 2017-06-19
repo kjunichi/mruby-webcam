@@ -22,14 +22,17 @@ install:
       
       .\vcpkg integrate install
       
-      .\vcpkg install opencv
+      .\vcpkg install opencv --triplet x64-windows 
       
       cd c:\projects\mruby-webcam
       
   - cinst winflexbison
 init:
 - call "%visualcpp%" %machine%
+- echo %machine%
 - set YACC=win_bison
+- set INCLUDE=c:\vcpkg\installed\x64-windows\include;%INCLUDE%
+- set LIB=c:\vcpkg\installed\x64-windows\lib;%LIB%
 build_script:
  - cd ..
  - git clone https://github.com/mruby/mruby.git
