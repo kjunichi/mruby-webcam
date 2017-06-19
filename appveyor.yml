@@ -11,7 +11,6 @@ environment:
   machine: amd64
 cache: 
   - c:\vcpkg\ -> appveyor.yml
-  - c:\vcpkg\installed -> appveyor.yml
 install:
   - cmd: >-
       cd c:\
