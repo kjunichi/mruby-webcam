@@ -9,7 +9,9 @@ environment:
     # Visual Studio 2015 64bit
     - visualcpp: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
   machine: amd64
-cache: c:\vcpkg\ -> appveyor.yml
+cache: 
+  - c:\vcpkg\ -> appveyor.yml
+  - c:\vcpkg\installed -> appveyor.yml
 install:
   - cmd: >-
       cd c:\
