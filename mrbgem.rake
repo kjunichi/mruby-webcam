@@ -63,26 +63,37 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       spec.linker.flags_before_libraries << "-framework QuartzCore -framework AppKit"
     end
   else
-    if RUBY_PLATFORM =~ /darwin/i
-      if File.exists?("/usr/local/opt/opencv3") then
-        spec.cxx.flags << "-I/usr/local/opt/opencv3/include"
-        spec.linker.flags_before_libraries << "-Wl,-rpath /usr/local/opt/opencv3/lib -L/usr/local/opt/opencv3/lib"
-        spec.linker.flags_before_libraries << "-lopencv_videoio"
-        spec.linker.flags_before_libraries << "-lopencv_imgcodecs"
-      else
-        spec.cxx.flags << "-I/usr/local/opt/opencv/include"
-        spec.linker.flags_before_libraries << "-L/usr/local/opt/opencv/lib"
+    if ENV['VisualStudioVersion'] || ENV['VSINSTALLDIR'] then
+      spec.linker.flags_before_libraries << "opencv_videoio"
+      spec.linker.flags_before_libraries << "opencv_imgcodecs"
+      spec.linker.flags_before_libraries << "opencv_objdetect"
+      spec.linker.flags_before_libraries << "opencv_videoio"
+      spec.linker.flags_before_libraries << "opencv_imgcodecs"
+      spec.linker.flags_before_libraries << "opencv_imgproc"
+      spec.linker.flags_before_libraries << "opencv_core"
+      spec.linker.flags_before_libraries << "stdc++"
+    else
+      if RUBY_PLATFORM =~ /darwin/i
+        if File.exists?("/usr/local/opt/opencv3") then
+          spec.cxx.flags << "-I/usr/local/opt/opencv3/include"
+          spec.linker.flags_before_libraries << "-Wl,-rpath /usr/local/opt/opencv3/lib -L/usr/local/opt/opencv3/lib"
+          spec.linker.flags_before_libraries << "-lopencv_videoio"
+          spec.linker.flags_before_libraries << "-lopencv_imgcodecs"
+        else
+          spec.cxx.flags << "-I/usr/local/opt/opencv/include"
+          spec.linker.flags_before_libraries << "-L/usr/local/opt/opencv/lib"
+        end
       end
+      spec.linker.flags_before_libraries << "-lopencv_objdetect"
+
+      spec.linker.flags_before_libraries << "-lopencv_highgui"
+      if File.exists?("/usr/local/lib/libopencv_videoio.so") then
+        spec.linker.flags_before_libraries << "-lopencv_videoio"
+        spec.linker.flags_before_libraries << "-lopencv_imgcodecs"      
+      end
+      spec.linker.flags_before_libraries << "-lopencv_imgproc"
+      spec.linker.flags_before_libraries << "-lopencv_core"
+      spec.linker.flags_before_libraries << "-lstdc++"
     end
-    spec.linker.flags_before_libraries << "-lopencv_objdetect"
-    
-    spec.linker.flags_before_libraries << "-lopencv_highgui"
-    if File.exists?("/usr/local/lib/libopencv_videoio.so") then
-      spec.linker.flags_before_libraries << "-lopencv_videoio"
-      spec.linker.flags_before_libraries << "-lopencv_imgcodecs"      
-    end
-    spec.linker.flags_before_libraries << "-lopencv_imgproc"
-    spec.linker.flags_before_libraries << "-lopencv_core"
-    spec.linker.flags_before_libraries << "-lstdc++"
   end
 end
