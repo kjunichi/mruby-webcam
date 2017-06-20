@@ -13,8 +13,11 @@ install:
   - cinst winflexbison
   - cinst opencv
   - dir C:\tools\opencv\build\include
-  - dir C:\tools\opencv\build\x64\vc14
+  - dir C:\tools\opencv\build\x64\vc14\lib
+  - dir C:\tools\opencv\build\x64\vc14\bin
   - set INCLUDE=C:\tools\opencv\build\include;%INCLUDE%
+  - set LIB=C:\tools\opencv\build\x64\vc14\lib;%LIB%
+  - set PATH=C:\tools\opencv\build\x64\vc14\bin;%PATH%
 init:
   - call "%visualcpp%" %machine%
   - echo %machine%
