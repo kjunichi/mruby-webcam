@@ -12,16 +12,17 @@ environment:
 install:
   - cinst winflexbison
   - cinst opencv
+  - dir C:\tools
 init:
   - call "%visualcpp%" %machine%
   - echo %machine%
   - set YACC=win_bison
-  - set INCLUDE=C:\vcpkg\installed\x64-windows\include;%INCLUDE%
-  - set LIB=C:\vcpkg\installed\x64-windows\lib;%LIB%
-  - set PATH=C:\vcpkg\installed\x64-windows\bin;%PATH%
+  #- set INCLUDE=C:\vcpkg\installed\x64-windows\include;%INCLUDE%
+  #- set LIB=C:\vcpkg\installed\x64-windows\lib;%LIB%
+  #- set PATH=C:\vcpkg\installed\x64-windows\bin;%PATH%
 build_script:
  - cd ..
- - git clone https://github.com/mruby/mruby.git
- - cd mruby
- - set MRUBY_CONFIG=..\mruby-webcam\appveyor_config.rb
+ #- git clone https://github.com/mruby/mruby.git
+ #- cd mruby
+ #- set MRUBY_CONFIG=..\mruby-webcam\appveyor_config.rb
  #- rake all test
