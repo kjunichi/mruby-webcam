@@ -9,32 +9,20 @@ environment:
     # Visual Studio 2015 64bit
     - visualcpp: C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat
   machine: amd64
-cache: 
-  - c:\vcpkg\ -> appveyor.yml
 install:
-  - cmd: >-
-      cd c:\
-      
-      IF NOT EXIST c:\vcpkg\ ( git clone https://github.com/Microsoft/vcpkg ) ELSE ( echo VCPKG is cached )
-      
-      cd vcpkg
-      
-      powershell -exec bypass scripts\bootstrap.ps1
-      
-      .\vcpkg integrate install
-      
-      .\vcpkg install opencv --triplet x64-windows 
-      
-      cd c:\projects\mruby-webcam
-      
   - cinst winflexbison
+  - cinst opencv
+  - dir C:\tools\opencv\build\include
+  - dir C:\tools\opencv\build\x64\vc14\lib
+  - dir C:\tools\opencv\build\x64\vc14\bin
+  - set INCLUDE=C:\tools\opencv\build\include;%INCLUDE%
+  - set LIB=C:\tools\opencv\build\x64\vc14\lib;%LIB%
+  - set PATH=C:\tools\opencv\build\x64\vc14\bin;%PATH%
+  - echo %LIB%
 init:
   - call "%visualcpp%" %machine%
   - echo %machine%
   - set YACC=win_bison
-  - set INCLUDE=C:\vcpkg\installed\x64-windows\include;%INCLUDE%
-  - set LIB=C:\vcpkg\installed\x64-windows\lib;%LIB%
-  - set PATH=C:\vcpkg\installed\x64-windows\bin;%PATH%
 build_script:
  - cd ..
  - git clone https://github.com/mruby/mruby.git

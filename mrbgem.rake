@@ -64,13 +64,27 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
     end
   else
     if ENV['VisualStudioVersion'] || ENV['VSINSTALLDIR'] then
-      spec.linker.flags_before_libraries << "opencv_highgui320.lib"
-      spec.linker.flags_before_libraries << "opencv_videoio320.lib"
-      spec.linker.flags_before_libraries << "opencv_imgcodecs320.lib"
-      spec.linker.flags_before_libraries << "opencv_objdetect320.lib"
-      spec.linker.flags_before_libraries << "opencv_imgproc320.lib"
-      spec.linker.flags_before_libraries << "opencv_core320.lib"
-      #spec.linker.flags_before_libraries << "stdc++"
+      worldLib = "opencv_world320.lib"
+      useWorldLib = false
+      paths = ENV["LIB"].split(";")
+      paths.each{|path|
+          checkPath = "#{path}\\#{worldLib}"
+          #puts "#{path}\\#{worldlib}"
+          if File.exist?(checkPath) then
+              useWorldLib = true
+          end
+      }
+      if useWorldLib then
+        spec.linker.flags_before_libraries << "#{worldLib}"
+      else
+        spec.linker.flags_before_libraries << "opencv_highgui320.lib"
+        spec.linker.flags_before_libraries << "opencv_videoio320.lib"
+        spec.linker.flags_before_libraries << "opencv_imgcodecs320.lib"
+        spec.linker.flags_before_libraries << "opencv_objdetect320.lib"
+        spec.linker.flags_before_libraries << "opencv_imgproc320.lib"
+        spec.linker.flags_before_libraries << "opencv_core320.lib"
+        #spec.linker.flags_before_libraries << "stdc++"
+      end
     else
       if RUBY_PLATFORM =~ /darwin/i
         if File.exists?("/usr/local/opt/opencv3") then
