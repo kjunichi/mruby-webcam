@@ -18,6 +18,7 @@ install:
   - set INCLUDE=C:\tools\opencv\build\include;%INCLUDE%
   - set LIB=C:\tools\opencv\build\x64\vc14\lib;%LIB%
   - set PATH=C:\tools\opencv\build\x64\vc14\bin;%PATH%
+  - echo %LIB%
 init:
   - call "%visualcpp%" %machine%
   - echo %machine%
