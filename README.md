@@ -1,6 +1,7 @@
 # mruby-webcam   [![Build Status](https://travis-ci.org/kjunichi/mruby-webcam.png?branch=master)](https://travis-ci.org/kjunichi/mruby-webcam)
 
 [![mruby-webcam](http://img.youtube.com/vi/_YFswQSockw/0.jpg)](http://www.youtube.com/watch?v=_YFswQSockw)
+[![Build status](https://ci.appveyor.com/api/projects/status/mowcb3ggp4bne9aq/branch/master?svg=true)](https://ci.appveyor.com/project/kjunichi/mruby-webcam/branch/master)
 
 ## install by mrbgems
 - add conf.gem line to `build_config.rb`
