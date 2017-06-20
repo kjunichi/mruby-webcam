@@ -12,7 +12,8 @@ environment:
 install:
   - cinst winflexbison
   - cinst opencv
-  - dir C:\tools\opencv\build\
+  - dir C:\tools\opencv\build\include
+  - dir C:\tools\opencv\build\x64
 init:
   - call "%visualcpp%" %machine%
   - echo %machine%
