@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** mrb_webcam.c - Webcam class
 **
 ** Copyright (c) Junichi Kajiwara 2015
@@ -6,16 +6,18 @@
 ** See Copyright Notice in LICENSE
 */
 
+#include "mrb_webcam.h"
 #include "mruby.h"
 #include "mruby/data.h"
 #include "mruby/variable.h"
-#include "mrb_webcam.h"
 #include <string.h>
 
 extern int
 webcam_start(mrb_state *, mrb_value);
 extern int
 webcam_snap(mrb_state *, mrb_value, mrb_value);
+extern int
+webcam_close(mrb_state *, mrb_value);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
 
@@ -89,6 +91,16 @@ mrb_webcam_snap(mrb_state *mrb, mrb_value self)
 }
 
 static mrb_value
+mrb_webcam_close(mrb_state *mrb, mrb_value self)
+{
+  int rtn = webcam_close(mrb, self);
+  if (rtn != 0) {
+    return mrb_false_value();
+  }
+  return mrb_true_value();
+}
+
+static mrb_value
 mrb_webcam_start(mrb_state *mrb, mrb_value self)
 {
 
@@ -110,6 +122,7 @@ mrb_mruby_webcam_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, webcam, "hello", mrb_webcam_hello, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, webcam, "hi", mrb_webcam_hi, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "snap", mrb_webcam_snap, MRB_ARGS_NONE());
+  mrb_define_method(mrb, webcam, "close", mrb_webcam_close, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "start", mrb_webcam_start, MRB_ARGS_NONE());
   DONE;
 }

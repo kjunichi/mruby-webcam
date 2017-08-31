@@ -1,4 +1,4 @@
-#include "mruby.h"
+﻿#include "mruby.h"
 #include "mruby/data.h"
 #include "mruby/string.h"
 #include "mruby/variable.h"
@@ -12,6 +12,8 @@ int
 webcam_snap(mrb_state *, mrb_value, mrb_value);
 int
 webcam_start(mrb_state *, mrb_value);
+int
+webcam_close(mrb_state *, mrb_value);
 MRB_END_DECL
 
 #define CAM_WINDOW_NAME "Webcam window"
@@ -40,15 +42,32 @@ getimageByType(mrb_state *mrb, cv::Mat mat, string type)
   return mrb_str_new(mrb, (const char *)&buff[0], buff.size());
 }
 
+static bool gIsOpenCap = false;
+static cv::VideoCapture gCap;
+
+int
+webcam_close(mrb_state *mrb, mrb_value self)
+{
+  if (gIsOpenCap) {
+    gCap.release();
+    gIsOpenCap = false;
+  }
+
+  return 0;
+}
+
 int
 webcam_snap(mrb_state *mrb, mrb_value self, mrb_value block)
 {
-  cv::VideoCapture cap(0); // open the default camera
-  if (!cap.isOpened())     // check if we succeeded
-    return -1;
+  if (!gIsOpenCap) {
+    gCap.open(0);         // open the default camera
+    if (!gCap.isOpened()) // check if we succeeded
+      return -1;
 
+    gIsOpenCap = true;
+  }
   cv::Mat frame;
-  cap >> frame; // get a new frame from camera
+  gCap >> frame; // get a new frame from camera
 
   // decide image type
   mrb_value fmtVal = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@fmt"));
@@ -58,7 +77,6 @@ webcam_snap(mrb_state *mrb, mrb_value self, mrb_value block)
   mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
 
   return 0;
-  // the camera will be deinitialized automatically in VideoCapture destructor
 }
 
 int
