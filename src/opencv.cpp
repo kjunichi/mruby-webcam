@@ -60,7 +60,15 @@ int
 webcam_snap(mrb_state *mrb, mrb_value self, mrb_value block)
 {
   if (!gIsOpenCap) {
-    gCap.open(0);         // open the default camera
+    gCap.open(0); // open the default camera
+    int width = mrb_fixnum_p(mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@width")));
+    int height = mrb_fixnum_p(mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@height")));
+    if (width > 0) {
+      gCap.set(CV_CAP_PROP_FRAME_WIDTH, width);
+    }
+    if (height > 0) {
+      gCap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+    }
     if (!gCap.isOpened()) // check if we succeeded
       return -1;
 
