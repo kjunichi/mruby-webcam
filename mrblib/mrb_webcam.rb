@@ -1,16 +1,24 @@
 class Webcam
   attr_accessor :haarcascade_path, :smile_cascade_path
   attr_accessor :fmt, :capture_cb, :face_cb, :smile_cb
+  attr_accessor :width, :height
   
   def init2
     @haarcascade_path = ""
     @smile_cascade_path = ""
     @fmt = ".jpg"
+    @width = -1
+    @height = -1
   end
   
   def setFmt(ext)
     @fmt = "." + ext
     #p @fmt
+  end
+
+  def set_size(w, h)
+    @width = w
+    @height = h
   end
 
   def bye
