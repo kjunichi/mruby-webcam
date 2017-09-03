@@ -18,6 +18,27 @@ MRB_END_DECL
 
 #define CAM_WINDOW_NAME "Webcam window"
 
+static void
+setCamSize(mrb_state *mrb, mrb_value self, cv::VideoCapture &cap)
+{
+  int width = -1;
+  int height = -1;
+  mrb_value v = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@width"));
+  if (mrb_fixnum_p(v)) {
+    width = mrb_fixnum(v);
+  }
+  v = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@height"));
+  if (mrb_fixnum_p(v)) {
+    height = mrb_fixnum(v);
+  }
+  if (width > 0) {
+    cap.set(CV_CAP_PROP_FRAME_WIDTH, width);
+  }
+  if (height > 0) {
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+  }
+}
+
 static mrb_value
 getimage(mrb_state *mrb, cv::Mat mat)
 {
@@ -61,14 +82,7 @@ webcam_snap(mrb_state *mrb, mrb_value self, mrb_value block)
 {
   if (!gIsOpenCap) {
     gCap.open(0); // open the default camera
-    int width = mrb_fixnum_p(mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@width")));
-    int height = mrb_fixnum_p(mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@height")));
-    if (width > 0) {
-      gCap.set(CV_CAP_PROP_FRAME_WIDTH, width);
-    }
-    if (height > 0) {
-      gCap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
-    }
+    setCamSize(mrb, self, gCap);
     if (!gCap.isOpened()) // check if we succeeded
       return -1;
 
@@ -193,7 +207,8 @@ int
 simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
 {
   cv::VideoCapture cap(0); // open the default camera
-  if (!cap.isOpened())     // check if we succeeded
+  setCamSize(mrb, self, cap);
+  if (!cap.isOpened()) // check if we succeeded
     return -1;
   for (;;) {
     cv::Mat frame;
@@ -204,6 +219,8 @@ simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
     cv::imshow(CAM_WINDOW_NAME, frame);
     int keyCode = cv::waitKey(30);
     if (keyCode == 0x1b) {
+      cap.release();
+      cv::waitKey(10);
       cv::destroyWindow(CAM_WINDOW_NAME);
       cv::waitKey(1);
       break;
