@@ -87,9 +87,9 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       end
     else
       if RUBY_PLATFORM =~ /darwin/i
-        if File.exists?("/usr/local/opt/opencv3") then
-          spec.cxx.flags << "-I/usr/local/opt/opencv3/include"
-          spec.linker.flags_before_libraries << "-Wl,-rpath /usr/local/opt/opencv3/lib -L/usr/local/opt/opencv3/lib"
+        if File.exists?("/usr/local/opt/opencv") then
+          spec.cxx.flags << "-I/usr/local/opt/opencv/include"
+          spec.linker.flags_before_libraries << "-Wl,-rpath /usr/local/opt/opencv/lib -L/usr/local/opt/opencv/lib"
           spec.linker.flags_before_libraries << "-lopencv_videoio"
           spec.linker.flags_before_libraries << "-lopencv_imgcodecs"
         else
