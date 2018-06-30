@@ -216,7 +216,9 @@ simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
     // cvtColor(frame, edges, COLOR_BGR2GRAY);
     // GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
     // Canny(edges, edges, 0, 30, 3);
-    cv::imshow(CAM_WINDOW_NAME, frame);
+    if(!frame.empty()) {
+      cv::imshow(CAM_WINDOW_NAME, frame);
+    }
     int keyCode = cv::waitKey(30);
     if (keyCode == 0x1b) {
       cap.release();

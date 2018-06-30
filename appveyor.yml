@@ -11,7 +11,7 @@ environment:
   machine: amd64
 install:
   - cinst winflexbison
-  - cinst opencv
+  - cinst opencv -Version 3.2.0
   - dir C:\tools\opencv\build\include
   - dir C:\tools\opencv\build\x64\vc14\lib
   - dir C:\tools\opencv\build\x64\vc14\bin
