@@ -1,7 +1,43 @@
 MRuby::Gem::Specification.new('mruby-webcam') do |spec|
   spec.license = 'MIT'
   spec.authors = 'Junichi Kajiwara'
+
   if build.kind_of?(MRuby::CrossBuild)
+    if spec.build.cc.command.start_with?("xcrun")
+      OPENCV_DIR="#{ENV["HOME"]}/Downloads/opencv2.framework"
+      puts "iOS! #{spec.build.cxx.command}"
+      puts "flags = #{spec.build.cxx.flags}"
+      spec.cxx.flags << "-I#{OPENCV_DIR}/Headers"
+      next
+    end
+    if !build.host_target
+      arch = spec.build.cc.command.split('/')[-1].split('-')[0]
+      arch.gsub!("arm","armeabi")
+      if !ENV['ANDROID_OPENCV_HOME']
+        raise("Set ANDROID_OPENCV_HOME")
+      end
+      opencv_home=ENV['ANDROID_OPENCV_HOME']
+
+      spec.cxx.flags << "-I#{opencv_home}/sdk/native/jni/include"
+
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_objdetect.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_highgui.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_videoio.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_imgcodecs.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_imgproc.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/libs/#{arch}/libopencv_core.a"
+
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/libIlmImf.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/liblibjasper.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/liblibjpeg.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/liblibtiff.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/liblibwebp.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/liblibpng.a"
+      spec.linker.flags_before_libraries << "#{opencv_home}/sdk/native/3rdparty/libs/armeabi/libtbb.a"
+
+      spec.linker.flags_before_libraries << "-L#{ENV['ANDROID_NDK_HOME']}/sources/cxx-stl/gnu-libstdc++/4.9/libs/#{arch}/"
+      spec.linker.flags_before_libraries << "-lz -llog -lgnustl_shared"
+    end
     if %w(x86_64-w64-mingw32 i686-w64-mingw32).include?(build.host_target)
       spec.cxx.flags << "-I/usr/#{build.host_target}/include"
       spec.linker.flags_before_libraries << "/usr/#{build.host_target}/lib/libopencv_objdetect310.a"
