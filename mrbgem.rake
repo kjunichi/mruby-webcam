@@ -62,6 +62,9 @@ MRuby::Gem::Specification.new('mruby-webcam') do |spec|
       spec.linker.flags_before_libraries << "-framework OpenCL -framework Cocoa -framework QTKit"
       spec.linker.flags_before_libraries << "-framework QuartzCore -framework AppKit"
     end
+  elsif system('pkg-config opencv4')
+    spec.cc.flags << `pkg-config --cflags opencv4`.strip
+    spec.linker.flags_before_libraries << `pkg-config --libs opencv4`.strip
   else
     if ENV['VisualStudioVersion'] || ENV['VSINSTALLDIR'] then
       worldLib = "opencv_world320.lib"
