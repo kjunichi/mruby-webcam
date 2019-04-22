@@ -44,20 +44,14 @@ mrb_webcam_init(mrb_state *mrb, mrb_value self)
   DATA_PTR(self) = NULL;
 
   mrb_get_args(mrb, "|o", &device);
-  if (!mrb_nil_p(device)) {
-    data = (mrb_webcam_data *)mrb_malloc(mrb, sizeof(mrb_webcam_data));
-    data->num = 0;
-    data->str = NULL;
-    if (mrb_type(device) == MRB_TT_STRING)
-      data->str = RSTRING_PTR(device);
-    else
-      data->num = mrb_fixnum(device);
-	printf("%s, %d\n", data->str, data->num);
-  } else {
-    data->str = NULL;
-    data->num = 0;
-  }
 
+  data = (mrb_webcam_data *)mrb_malloc(mrb, sizeof(mrb_webcam_data));
+  data->str = NULL;
+  data->num = 0;
+  if (mrb_type(device) == MRB_TT_STRING)
+    data->str = RSTRING_PTR(device);
+  else if (mrb_type(device) == MRB_TT_FIXNUM)
+    data->num = mrb_fixnum(device);
   DATA_PTR(self) = data;
 
   val = mrb_funcall(mrb, self, "init2", 0);

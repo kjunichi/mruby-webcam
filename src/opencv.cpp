@@ -134,7 +134,7 @@ faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBlock, m
   }
   cv::VideoCapture cap;
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != NULL && data->str != NULL)
+  if (data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
     cap = cv::VideoCapture(data->num);
@@ -226,7 +226,7 @@ simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
   cv::VideoCapture cap;
 
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != NULL && data->str != NULL)
+  if (data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
     cap = cv::VideoCapture(data->num);
@@ -295,7 +295,7 @@ webcam_each(mrb_state *mrb, mrb_value self)
   cv::VideoCapture cap;
 
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != NULL && data->str != NULL)
+  if (data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
     cap = cv::VideoCapture(data->num);
