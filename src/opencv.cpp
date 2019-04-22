@@ -140,7 +140,7 @@ faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBlock, m
     cap = cv::VideoCapture(data->num);
   if (!cap.isOpened())     // check if we succeeded
     return -1;
-
+  setCamSize(mrb, self, cap);
   for (;;) {
     cv::Mat frame;
     cap >> frame; // get a new frame from camera
@@ -288,9 +288,10 @@ webcam_start(mrb_state *mrb, mrb_value self)
 int
 webcam_each(mrb_state *mrb, mrb_value self)
 {
+  mrb_bool preview = TRUE;
   mrb_value block;
 
-  mrb_get_args(mrb, "&", &block);
+  mrb_get_args(mrb, "|b&", &preview, &block);
 
   cv::VideoCapture cap;
 
@@ -299,22 +300,26 @@ webcam_each(mrb_state *mrb, mrb_value self)
     cap = cv::VideoCapture(data->str);
   else
     cap = cv::VideoCapture(data->num);
-  setCamSize(mrb, self, cap);
   if (!cap.isOpened()) // check if we succeeded
     return -1;
+  setCamSize(mrb, self, cap);
   for (;;) {
     cv::Mat frame;
     cap >> frame; // get a new frame from camera
-    if(!frame.empty()) {
+    if(frame.empty()) {
+      continue;
+    }
+    if (preview) {
       cv::imshow(CAM_WINDOW_NAME, frame);
     }
     // decide image type
     mrb_value fmtVal = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@fmt"));
     string fmt(RSTRING_PTR(fmtVal), RSTRING_LEN(fmtVal));
     // ブロックを呼び出す。
-    mrb_value ret = mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
-    if (mrb_type(ret) == MRB_TT_FALSE) {
-      break;
+    mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
+
+    if (preview) {
+      cv::waitKey(30);
     }
   }
   return 0;

@@ -17,7 +17,7 @@ end
 ## example
 ```ruby
 cam = Webcam.new
-
+cam.set_size 300, 300
 cam.capture {|img|
   # img : JPEG format(default)
   puts img.length
@@ -28,11 +28,20 @@ cam.capture {|img|
 cam.start
 ```
 
+```ruby
+cam = Webcam.new
+cam.set_size 300, 300
+cam.each {|img|
+  # img : JPEG format(default)
+  puts img.length
+}
+```
+
 ### how to put ppm image
 
 ```ruby
 cam = Webcam.new
-cam.setFmt "ppm"
+cam.set_fmt "ppm"
 cam.capture {|img|
   # img : PPM format(P6)
   puts img

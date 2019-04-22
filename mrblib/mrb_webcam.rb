@@ -11,7 +11,7 @@ class Webcam
     @height = -1
   end
   
-  def setFmt(ext)
+  def set_fmt(ext)
     @fmt = "." + ext
     #p @fmt
   end
