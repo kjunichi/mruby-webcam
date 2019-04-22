@@ -32,8 +32,7 @@ static mrb_value
 mrb_webcam_init(mrb_state *mrb, mrb_value self)
 {
   mrb_webcam_data *data;
-  mrb_value str;
-  mrb_value haarcascadePath;
+  mrb_value device = mrb_nil_value();
 
   data = (mrb_webcam_data *)DATA_PTR(self);
   if (data) {
@@ -42,18 +41,18 @@ mrb_webcam_init(mrb_state *mrb, mrb_value self)
   DATA_TYPE(self) = &mrb_webcam_data_type;
   DATA_PTR(self) = NULL;
 
-  mrb_get_args(mrb, "|o", &str);
-  // mrb_get_args(mrb, "s", &str, &len);
-  data = (mrb_webcam_data *)mrb_malloc(mrb, sizeof(mrb_webcam_data));
-  if (!mrb_nil_p(str)) {
-    data->str = RSTRING_PTR(str);
-  } else {
-    data->str = NULL;
-  }
+  mrb_get_args(mrb, "|o", &device);
 
+  data = (mrb_webcam_data *)mrb_malloc(mrb, sizeof(mrb_webcam_data));
+  data->str = NULL;
+  data->num = 0;
+  if (mrb_type(device) == MRB_TT_STRING)
+    data->str = RSTRING_PTR(device);
+  else if (mrb_type(device) == MRB_TT_FIXNUM)
+    data->num = mrb_fixnum(device);
   DATA_PTR(self) = data;
 
-  mrb_value val = mrb_funcall(mrb, self, "init2", 0);
+  mrb_funcall(mrb, self, "init2", 0);
 
   return self;
 }
@@ -75,8 +74,6 @@ mrb_webcam_hi(mrb_state *mrb, mrb_value self)
 static mrb_value
 mrb_webcam_snap(mrb_state *mrb, mrb_value self)
 {
-  unsigned char *buf;
-  size_t size;
   mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
   int rtn = webcam_snap(mrb, self, block);
   if (rtn != 0) {
@@ -131,7 +128,7 @@ mrb_mruby_webcam_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, webcam, "snap", mrb_webcam_snap, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "close", mrb_webcam_close, MRB_ARGS_NONE());
   mrb_define_method(mrb, webcam, "start", mrb_webcam_start, MRB_ARGS_NONE());
-  mrb_define_method(mrb, webcam, "each", mrb_webcam_each, MRB_ARGS_NONE());
+  mrb_define_method(mrb, webcam, "each", mrb_webcam_each, MRB_ARGS_OPT(1) | MRB_ARGS_BLOCK());
   DONE;
 }
 
