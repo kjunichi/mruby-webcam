@@ -7,8 +7,13 @@
 
 #include <opencv2/opencv.hpp>
 
+#define OPENCV_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+#define OPENCV_VERSION_CODE OPENCV_VERSION(CV_MAJOR_VERSION, CV_MINOR_VERSION, CV_SUBMINOR_VERSION)
+
+#if OPENCV_VERSION_CODE>=OPENCV_VERSION(4,0,0)
 #include <opencv2/videoio/legacy/constants_c.h>
 #include <opencv2/imgcodecs/legacy/constants_c.h>
+#endif
 
 using namespace std;
 
@@ -129,10 +134,10 @@ faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBlock, m
   }
   cv::VideoCapture cap;
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != nullptr)
+  if (data != NULL && data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
-    cap = cv::VideoCapture(0); // open the default camera
+    cap = cv::VideoCapture(data->num);
   if (!cap.isOpened())     // check if we succeeded
     return -1;
 
@@ -221,13 +226,13 @@ simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
   cv::VideoCapture cap;
 
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != nullptr)
+  if (data != NULL && data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
-    cap = cv::VideoCapture(0); // open the default camera
-  setCamSize(mrb, self, cap);
+    cap = cv::VideoCapture(data->num);
   if (!cap.isOpened()) // check if we succeeded
     return -1;
+  setCamSize(mrb, self, cap);
   for (;;) {
     cv::Mat frame;
     cap >> frame; // get a new frame from camera
@@ -283,15 +288,17 @@ webcam_start(mrb_state *mrb, mrb_value self)
 int
 webcam_each(mrb_state *mrb, mrb_value self)
 {
-  mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
+  mrb_value block;
+
+  mrb_get_args(mrb, "&", &block);
 
   cv::VideoCapture cap;
 
   mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
-  if (data != nullptr)
+  if (data != NULL && data->str != NULL)
     cap = cv::VideoCapture(data->str);
   else
-    cap = cv::VideoCapture(0); // open the default camera
+    cap = cv::VideoCapture(data->num);
   setCamSize(mrb, self, cap);
   if (!cap.isOpened()) // check if we succeeded
     return -1;
@@ -306,7 +313,7 @@ webcam_each(mrb_state *mrb, mrb_value self)
     string fmt(RSTRING_PTR(fmtVal), RSTRING_LEN(fmtVal));
     // ブロックを呼び出す。
     mrb_value ret = mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
-	if (mrb_type(ret) == MRB_TT_FALSE) {
+    if (mrb_type(ret) == MRB_TT_FALSE) {
       break;
     }
   }

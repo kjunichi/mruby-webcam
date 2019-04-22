@@ -9,6 +9,7 @@
 #include "mruby.h"
 
 typedef struct {
+  int num;
   char *str;
 } mrb_webcam_data;
 
