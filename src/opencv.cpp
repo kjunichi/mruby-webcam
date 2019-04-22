@@ -3,7 +3,12 @@
 #include "mruby/string.h"
 #include "mruby/variable.h"
 
+#include "mrb_webcam.h"
+
 #include <opencv2/opencv.hpp>
+
+#include <opencv2/videoio/legacy/constants_c.h>
+#include <opencv2/imgcodecs/legacy/constants_c.h>
 
 using namespace std;
 
@@ -12,6 +17,8 @@ int
 webcam_snap(mrb_state *, mrb_value, mrb_value);
 int
 webcam_start(mrb_state *, mrb_value);
+int
+webcam_each(mrb_state *, mrb_value);
 int
 webcam_close(mrb_state *, mrb_value);
 MRB_END_DECL
@@ -120,7 +127,12 @@ faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBlock, m
       return -1;
     }
   }
-  cv::VideoCapture cap(0); // open the default camera
+  cv::VideoCapture cap;
+  mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
+  if (data != nullptr)
+    cap = cv::VideoCapture(data->str);
+  else
+    cap = cv::VideoCapture(0); // open the default camera
   if (!cap.isOpened())     // check if we succeeded
     return -1;
 
@@ -206,7 +218,13 @@ faceLoop(mrb_state *mrb, mrb_value self, mrb_value block, mrb_value faceBlock, m
 int
 simpleLoop(mrb_state *mrb, mrb_value block, mrb_value self)
 {
-  cv::VideoCapture cap(0); // open the default camera
+  cv::VideoCapture cap;
+
+  mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
+  if (data != nullptr)
+    cap = cv::VideoCapture(data->str);
+  else
+    cap = cv::VideoCapture(0); // open the default camera
   setCamSize(mrb, self, cap);
   if (!cap.isOpened()) // check if we succeeded
     return -1;
@@ -260,4 +278,37 @@ webcam_start(mrb_state *mrb, mrb_value self)
     return faceLoop(mrb, self, block, faceBlock, smileBlock, haarcascade_path);
   }
   return simpleLoop(mrb, block, self);
+}
+
+int
+webcam_each(mrb_state *mrb, mrb_value self)
+{
+  mrb_value block = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@capture_cb"));
+
+  cv::VideoCapture cap;
+
+  mrb_webcam_data *data = (mrb_webcam_data*) DATA_PTR(self);
+  if (data != nullptr)
+    cap = cv::VideoCapture(data->str);
+  else
+    cap = cv::VideoCapture(0); // open the default camera
+  setCamSize(mrb, self, cap);
+  if (!cap.isOpened()) // check if we succeeded
+    return -1;
+  for (;;) {
+    cv::Mat frame;
+    cap >> frame; // get a new frame from camera
+    if(!frame.empty()) {
+      cv::imshow(CAM_WINDOW_NAME, frame);
+    }
+    // decide image type
+    mrb_value fmtVal = mrb_iv_get(mrb, self, mrb_intern_lit(mrb, "@fmt"));
+    string fmt(RSTRING_PTR(fmtVal), RSTRING_LEN(fmtVal));
+    // ブロックを呼び出す。
+    mrb_value ret = mrb_yield(mrb, block, getimageByType(mrb, frame, fmt));
+	if (mrb_type(ret) == MRB_TT_FALSE) {
+      break;
+    }
+  }
+  return 0;
 }

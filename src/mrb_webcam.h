@@ -8,6 +8,10 @@
 #define MRB_WEBCAM_H
 #include "mruby.h"
 
+typedef struct {
+  char *str;
+} mrb_webcam_data;
+
 void
 mrb_mruby_webcam_gem_init(mrb_state *mrb);
 
